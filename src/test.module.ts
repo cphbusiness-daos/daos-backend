@@ -11,4 +11,4 @@ import { env } from "./util/env";
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class TestModule {}
