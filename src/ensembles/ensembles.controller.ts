@@ -1,6 +1,13 @@
-import { Controller, Get, NotFoundException, Query } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+} from "@nestjs/common";
 
 import { EnsemblesService } from "./ensembles.service";
+import { getId } from "./lib/get-id";
 import { getLimit } from "./lib/get-limit";
 import { getPage } from "./lib/get-page";
 
@@ -26,5 +33,15 @@ export class EnsemblesController {
       data: ensembles,
       length: ensembles.length,
     };
+  }
+
+  @Get("/:id")
+  async getEnsemble(@Param("id") id: string) {
+    const idValue = getId(id);
+    const ensemble = await this.ensemblesService.findById(idValue);
+    if (!ensemble) {
+      throw new NotFoundException("Ensemble not found");
+    }
+    return ensemble;
   }
 }
