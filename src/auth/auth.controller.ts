@@ -1,14 +1,18 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Request,
   Res,
+  UseGuards,
 } from "@nestjs/common";
 import type { Response } from "express";
 
 import { validate } from "../util/validation";
+import { AuthGuard } from "./auth.guard";
 import { AuthService } from "./auth.service";
 import { hashPassword, sendAuthCookie } from "./constants/auth";
 import {
@@ -52,5 +56,11 @@ export class AuthController {
 
     sendAuthCookie({ res, token });
     return token;
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("profile")
+  getProfile(@Request() req: { user?: unknown }) {
+    return req.user;
   }
 }

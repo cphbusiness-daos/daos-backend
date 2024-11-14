@@ -32,16 +32,16 @@ describe("AuthController (e2e)", () => {
     await userService.deleteMany();
   });
 
+  // Arrange
+  const body: SignUpRequestBodySchema = {
+    email: "email@test.com",
+    password: "password",
+    acceptedToc: true,
+    fullName: "Test User",
+  };
+
   describe("GET /v1/auth/signup", () => {
     it("should return 201 when a user is created", async () => {
-      // Arrange
-      const body: SignUpRequestBodySchema = {
-        email: "email@test.com",
-        password: "password",
-        acceptedToc: true,
-        fullName: "Test User",
-      };
-
       // Act
       const response = await request(app.getHttpServer())
         .post("/v1/auth/signup")
@@ -71,14 +71,6 @@ describe("AuthController (e2e)", () => {
     });
 
     it("should return 409 when the user already exists", async () => {
-      // Arrange
-      const body: SignUpRequestBodySchema = {
-        email: "email@test.com",
-        password: "password",
-        acceptedToc: true,
-        fullName: "Test User",
-      };
-
       // Act
       await request(app.getHttpServer())
         .post("/v1/auth/signup")
@@ -95,14 +87,6 @@ describe("AuthController (e2e)", () => {
 
   describe("GET /v1/auth/login", () => {
     it("should return 200 when a user logs in", async () => {
-      // Arrange
-      const body: SignUpRequestBodySchema = {
-        email: "email@test.com",
-        password: "password",
-        acceptedToc: true,
-        fullName: "Test User",
-      };
-
       // Act
       await request(app.getHttpServer())
         .post("/v1/auth/signup")
@@ -154,12 +138,6 @@ describe("AuthController (e2e)", () => {
 
     it("should return 401 when the password is incorrect", async () => {
       // Arrange
-      const body: SignUpRequestBodySchema = {
-        email: "email@test.com",
-        password: "password",
-        acceptedToc: true,
-        fullName: "Test User",
-      };
       const loginBody: LoginRequestBodySchema = {
         email: body.email,
         password: "incorrect",
@@ -180,12 +158,6 @@ describe("AuthController (e2e)", () => {
 
     it("should return 401 when the password is incorrect", async () => {
       // Arrange
-      const body: SignUpRequestBodySchema = {
-        email: "email@test.com",
-        password: "password",
-        acceptedToc: true,
-        fullName: "Test User",
-      };
       const loginBody: LoginRequestBodySchema = {
         email: body.email,
         password: "incorrect",
@@ -199,6 +171,42 @@ describe("AuthController (e2e)", () => {
       const response = await request(app.getHttpServer())
         .post("/v1/auth/login")
         .send(loginBody satisfies LoginRequestBodySchema);
+
+      // Assert
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe("GET /v1/auth/profile", () => {
+    it("should return 200 when the user is authenticated - token in Bearer header", async () => {
+      // Act
+      const signupResponse = await request(app.getHttpServer())
+        .post("/v1/auth/signup")
+        .send(body satisfies SignUpRequestBodySchema);
+
+      const response = await request(app.getHttpServer())
+        .get("/v1/auth/profile")
+        .set(
+          "Authorization",
+          `Bearer ${(signupResponse.body as { token: string }).token}`,
+        );
+
+      // Assert
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        sub: expect.any(String),
+        email: body.email,
+      });
+      expect(response.body).toHaveProperty("iat");
+      expect(response.body).toHaveProperty("exp");
+    });
+
+    it("should return 401 when the user is not authenticated", async () => {
+      // Act
+      const response = await request(app.getHttpServer()).get(
+        "/v1/auth/profile",
+      );
 
       // Assert
       expect(response.status).toBe(401);

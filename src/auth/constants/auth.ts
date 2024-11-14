@@ -2,6 +2,7 @@ import { pbkdf2Sync, randomBytes } from "crypto";
 import type { Response } from "express";
 
 import { env } from "../../util/env";
+import type { JwtToken } from "../types/types";
 
 export function hashPassword({
   password,
@@ -37,9 +38,9 @@ export function sendAuthCookie({
   token,
 }: {
   res: Response;
-  token: { token: string };
+  token: JwtToken;
 }) {
-  res.cookie("token", {
+  res.cookie("auth", {
     httpOnly: true,
     secure: true,
     sameSite: "strict",

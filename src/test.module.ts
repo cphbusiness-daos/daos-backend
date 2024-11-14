@@ -12,6 +12,7 @@ import { env } from "./util/env";
   imports: [
     MongooseModule.forRoot(env.DATABASE_URL),
     EnsemblesModule,
+    AuthModule,
     UsersModule,
     AuthModule,
   ],

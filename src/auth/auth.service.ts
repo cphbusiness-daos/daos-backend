@@ -8,6 +8,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "../users/users.service";
 import { verifyPassword } from "./constants/auth";
 import type { SignUpRequestBodySchema } from "./lib/validation-schemas";
+import type { JwtPayload, JwtToken } from "./types/types";
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
   }: {
     email: string;
     password: string;
-  }): Promise<{ token: string }> {
+  }): Promise<JwtToken> {
     const user = await this.usersService.findOne(email);
 
     if (!user) {
@@ -56,7 +57,11 @@ export class AuthService {
       newsletterOptInAt: user.newsletterOptInAt ? timestamp : undefined,
     });
 
-    const payload = { sub: newUser._id, email: user.email };
+    const payload: JwtPayload = {
+      sub: newUser._id.toString(),
+      email: user.email,
+    };
+
     return {
       token: await this.jwtService.signAsync(payload),
     };

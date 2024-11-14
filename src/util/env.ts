@@ -22,7 +22,7 @@ export const env = createEnv({
 
       return `${val}/dev`;
     }),
-    JWT_SECRET: z.string(),
+    JWT_SECRET: z.string().default("secret"),
     AUTH_COOKIE_EXPIRATION: z.coerce.number().default(1),
   },
 
