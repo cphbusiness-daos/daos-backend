@@ -1,8 +1,11 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
+  Post,
   Query,
 } from "@nestjs/common";
 
@@ -42,6 +45,27 @@ export class EnsemblesController {
     if (!ensemble) {
       throw new NotFoundException("Ensemble not found");
     }
+    return ensemble;
+  }
+
+  @Post("/:id")
+  async createEnsemble(@Param("id") id: string, @Body() body: unknown) {
+    const idValue = getId(id);
+    const ensemble = await this.ensemblesService.findById(idValue);
+    if (ensemble) {
+      throw new NotFoundException("Ensemble already exists");
+    }
+    return this.ensemblesService.addEnsemble({ _id: idValue });
+  }
+
+  @Delete("/:id")
+  async deleteEnsemble(@Param("id") id: string) {
+    const idValue = getId(id);
+    const ensemble = await this.ensemblesService.findById(idValue);
+    if (!ensemble) {
+      throw new NotFoundException("Ensemble not found");
+    }
+    await this.ensemblesService.softDeleteOne(idValue);
     return ensemble;
   }
 }

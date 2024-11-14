@@ -68,6 +68,26 @@ describe("EnsemblesController (e2e)", () => {
       });
     });
 
+    it("should return 404 when no ensemble is found but is deactivated", async () => {
+      // Arrange
+      const ensemble = await ensemblesService.insertOne({
+        ...mockEnsembles[0],
+        deactivated_at: new Date().toISOString(),
+      });
+
+      // Act
+      const response = await request(app.getHttpServer()).get(
+        `/v1/ensembles/${String(ensemble._id)}`,
+      );
+
+      // Assert
+      expect(response.status).toBe(404);
+      expect(response.body).toMatchObject({
+        statusCode: 404,
+        message: "Ensemble not found",
+      });
+    });
+
     it("should return 400 when the id is too long", async () => {
       // Act
       const response = await request(app.getHttpServer()).get(
