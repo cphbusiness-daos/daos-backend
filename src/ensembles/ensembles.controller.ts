@@ -8,8 +8,8 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
-import { validate } from "src/util/validation";
 
+import { validate } from "../../src/util/validation";
 import { EnsemblesService } from "./ensembles.service";
 import { getId } from "./lib/get-id";
 import { getLimit } from "./lib/get-limit";
@@ -56,6 +56,8 @@ export class EnsemblesController {
       schema: createEnsembleBodySchema,
       value: createEnsembleBody,
     });
+
+    // TODO: Add validation whether the user already exists
 
     const timestamp = new Date().toISOString();
     return this.ensemblesService.insertOne({

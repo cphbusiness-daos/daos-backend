@@ -4,6 +4,7 @@ import { type Server } from "http";
 import * as request from "supertest";
 
 import { EnsemblesService } from "../src/ensembles/ensembles.service";
+import type { CreateEnsembleBody } from "../src/ensembles/lib/validation-schemas";
 import { TestModule } from "../src/test.module";
 import { mockEnsembles } from "./mocks/ensembles.mock";
 
@@ -213,6 +214,57 @@ describe("EnsemblesController (e2e)", () => {
       expect(response.body).toMatchObject({
         statusCode: 404,
         message: "No ensembles found",
+      });
+    });
+  });
+
+  describe("DELETE /v1/ensembles/:id", () => {
+    it("should return 200 when the ensemble is successfully deactivated", async () => {
+      // Arrange
+      const ensemble = await ensemblesService.insertOne(mockEnsembles[0]);
+      const response = await request(app.getHttpServer()).delete(
+        `/v1/ensembles/${String(ensemble._id)}`,
+      );
+      // Assert
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject(mockEnsembles[0]);
+    });
+  });
+
+  describe("POST /v1/ensembles", () => {
+    it("should return 201 when the ensemble is successfully created", async () => {
+      // Arrange
+      const ensemble = {
+        ...mockEnsembles[0],
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        created_at: expect.any(String),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        updated_at: expect.any(String),
+      };
+      const response = await request(app.getHttpServer())
+        .post("/v1/ensembles")
+        .send(ensemble);
+      // Assert
+      expect(response.status).toBe(201);
+      expect(response.body).toMatchObject(
+        ensemble satisfies CreateEnsembleBody,
+      );
+    });
+
+    it("should return 400 when the ensemble is invalid", async () => {
+      // Arrange
+      const ensemble = {
+        ...mockEnsembles[0],
+        // @ts-expect-error - intentionally invalid
+        name: undefined,
+      } satisfies CreateEnsembleBody;
+      const response = await request(app.getHttpServer())
+        .post("/v1/ensembles")
+        .send(ensemble);
+      // Assert
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        message: "Validation failed",
       });
     });
   });
