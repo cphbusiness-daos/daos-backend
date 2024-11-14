@@ -1,5 +1,5 @@
 import { pbkdf2Sync, randomBytes } from "crypto";
-import type { Response } from "express";
+import type { CookieOptions, Response } from "express";
 
 import { env } from "../../util/env";
 import type { JwtToken } from "../types/types";
@@ -40,11 +40,10 @@ export function sendAuthCookie({
   res: Response;
   token: JwtToken;
 }) {
-  res.cookie("auth", {
+  res.cookie("auth", token, {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
     maxAge: 1000 * 60 * 60 * 24 * env.AUTH_COOKIE_EXPIRATION, // env.AUTH_COOKIE_EXPIRATION in days
-    value: { ...token },
-  });
+  } satisfies CookieOptions);
 }

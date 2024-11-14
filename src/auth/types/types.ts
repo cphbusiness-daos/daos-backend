@@ -10,5 +10,5 @@ export type JwtToken = {
 };
 
 export type AuthCookie = CookieOptions & {
-  value: { token: string };
+  token: string;
 };

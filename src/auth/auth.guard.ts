@@ -47,6 +47,7 @@ export class AuthGuard implements CanActivate {
     request: Request & { cookies?: { auth?: AuthCookie } },
   ): string | undefined {
     const authHeader = request.headers.authorization;
+
     if (authHeader) {
       const [type, token] = authHeader.split(" ");
       if (type === "Bearer") {
@@ -54,7 +55,7 @@ export class AuthGuard implements CanActivate {
       }
     }
     // If token is not in Authorization header, check cookies
-    return request.cookies?.auth?.value.token;
+    return request.cookies?.auth?.token;
   }
 
   private async verifyUser(token: JwtPayload) {

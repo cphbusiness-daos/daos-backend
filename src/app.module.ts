@@ -14,7 +14,6 @@ import { env } from "./util/env";
     EnsemblesModule,
     AuthModule,
     UsersModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
