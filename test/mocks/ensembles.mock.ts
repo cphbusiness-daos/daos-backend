@@ -1,4 +1,4 @@
-import { type Ensemble } from "src/ensembles/ensembles.schema";
+import type { Ensemble } from "../../src/ensembles/ensembles.schema";
 
 export const mockEnsembles = [
   {

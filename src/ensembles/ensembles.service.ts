@@ -18,9 +18,14 @@ export class EnsemblesService {
     limit?: number;
   }): Promise<EnsembleDocument[]> {
     const skip = (page - 1) * limit; // Calculate the number of documents to skip
-    return this.ensembleModel.find().skip(skip).limit(limit).exec();
+    return this.ensembleModel
+      .find({
+        deactivated_at: { $exists: false },
+      })
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
-
   async findById(id: string): Promise<EnsembleDocument | null> {
     return this.ensembleModel
       .findOne({
