@@ -16,9 +16,18 @@ export class EnsemblesService {
   }: {
     page?: number;
     limit?: number;
-  }): Promise<Ensemble[]> {
+  }): Promise<EnsembleDocument[]> {
     const skip = (page - 1) * limit; // Calculate the number of documents to skip
     return this.ensembleModel.find().skip(skip).limit(limit).exec();
+  }
+
+  async findById(id: string): Promise<EnsembleDocument | null> {
+    return this.ensembleModel
+      .findOne({
+        _id: id,
+        deactivated_at: { $exists: false },
+      })
+      .exec();
   }
 
   async insertMany(ensembles: Ensemble[]): Promise<EnsembleDocument[]> {
@@ -33,7 +42,13 @@ export class EnsemblesService {
     await this.ensembleModel.deleteMany();
   }
 
-  async findById(id: string): Promise<Ensemble | null> {
-    return this.ensembleModel.findById(id).exec();
+  async softDeleteOne(id: string): Promise<EnsembleDocument | null> {
+    return this.ensembleModel
+      .findByIdAndUpdate(
+        id,
+        { deactivated_at: new Date().toISOString() },
+        { new: true },
+      )
+      .exec();
   }
 }
