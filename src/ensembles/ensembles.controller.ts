@@ -9,7 +9,7 @@ import {
   Query,
 } from "@nestjs/common";
 
-import { validate } from "../../src/util/validation";
+import { validate } from "../util/validation";
 import { EnsemblesService } from "./ensembles.service";
 import { getId } from "./lib/get-id";
 import { getLimit } from "./lib/get-limit";
