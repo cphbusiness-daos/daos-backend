@@ -10,7 +10,7 @@ export const signUpRequestBodySchema = z.object({
   fullName: z.string(),
   email: z.string().email(),
   password: z.string(),
-  acceptedToc: z.boolean(),
+  acceptedToc: z.literal(true),
   newsletterOptInAt: z.boolean().optional(),
 });
 export type SignUpRequestBodySchema = z.infer<typeof signUpRequestBodySchema>;
