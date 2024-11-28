@@ -121,12 +121,19 @@ export class EnsemblesController {
     });
 
     const timestamp = new Date().toISOString();
-    return this.ensemblesService.insertOne({
+    const createdEnsemble = await this.ensemblesService.insertOne({
       ...body,
       admin_user_id: req.user.sub,
       created_at: timestamp,
       updated_at: timestamp,
     });
+
+    await this.userEnsemblesService.createOne({
+      userId: req.user.sub,
+      ensembleId: createdEnsemble._id.toString(),
+    });
+
+    return createdEnsemble;
   }
 
   @UseGuards(AuthGuard)

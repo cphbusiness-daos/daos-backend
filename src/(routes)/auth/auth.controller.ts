@@ -61,6 +61,14 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
+  @Post("/logout")
+  @HttpCode(HttpStatus.OK)
+  async signOut(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie("auth");
+    return { message: "OK" };
+  }
+
+  @UseGuards(AuthGuard)
   @Get("profile")
   getProfile(@Request() req: { user?: unknown }) {
     return req.user;
