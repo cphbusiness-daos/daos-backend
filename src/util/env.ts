@@ -24,6 +24,7 @@ export const env = createEnv({
     }),
     JWT_SECRET: z.string().default("secret"),
     AUTH_COOKIE_EXPIRATION: z.coerce.number().default(1),
+    DAOS_FRONTEND_URL: z.string().default("http://localhost:5173"),
   },
 
   runtimeEnv: process.env,
