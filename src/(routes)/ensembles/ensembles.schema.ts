@@ -57,7 +57,7 @@ export class Ensemble {
   @Prop()
   updated_at?: string;
 
-  @Prop()
+  @Prop({ index: true })
   deactivated_at?: string;
 }
 

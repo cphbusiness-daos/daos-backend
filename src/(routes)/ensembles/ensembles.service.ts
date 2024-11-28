@@ -10,6 +10,12 @@ export class EnsemblesService {
     @InjectModel(Ensemble.name) private ensembleModel: Model<Ensemble>,
   ) {}
 
+  async count(): Promise<number> {
+    return this.ensembleModel.countDocuments({
+      deactivated_at: { $exists: false },
+    });
+  }
+
   async findAll({
     page = 1,
     limit = 10,
@@ -30,6 +36,15 @@ export class EnsemblesService {
     return this.ensembleModel
       .findOne({
         _id: id,
+        deactivated_at: { $exists: false },
+      })
+      .exec();
+  }
+
+  async findByIds({ userEnsembleIds }: { userEnsembleIds: string[] }) {
+    return this.ensembleModel
+      .find({
+        _id: { $in: userEnsembleIds },
         deactivated_at: { $exists: false },
       })
       .exec();

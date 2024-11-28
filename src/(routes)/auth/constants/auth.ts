@@ -1,7 +1,7 @@
 import { pbkdf2Sync, randomBytes } from "crypto";
 import type { CookieOptions, Response } from "express";
 
-import { env } from "../../util/env";
+import { env } from "../../../util/env";
 import type { JwtToken } from "../types/types";
 
 export function hashPassword({

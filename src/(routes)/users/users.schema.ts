@@ -8,7 +8,7 @@ export class User {
   @Prop()
   fullName: string;
 
-  @Prop()
+  @Prop({ index: true, unique: true })
   email: string;
 
   @Prop()
@@ -38,7 +38,7 @@ export class User {
   @Prop()
   updated_at?: string;
 
-  @Prop()
+  @Prop({ index: true })
   deactivated_at?: string;
 }
 

@@ -27,7 +27,6 @@ export const createEnsembleBodySchema = z.object({
       "symphonic",
     ]),
   ),
-  admin_user_id: z.string(),
 });
 
 export type CreateEnsembleBody = z.infer<typeof createEnsembleBodySchema>;

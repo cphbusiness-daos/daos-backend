@@ -3,8 +3,8 @@ import { Test, type TestingModule } from "@nestjs/testing";
 import { type Server } from "http";
 import * as request from "supertest";
 
-import { EnsemblesService } from "../src/ensembles/ensembles.service";
-import type { CreateEnsembleBody } from "../src/ensembles/lib/validation-schemas";
+import { EnsemblesService } from "../src/(routes)/ensembles/ensembles.service";
+import type { CreateEnsembleBody } from "../src/(routes)/ensembles/lib/validation-schemas";
 import { TestModule } from "../src/test.module";
 import { mockEnsembles } from "./mocks/ensembles.mock";
 

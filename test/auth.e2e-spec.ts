@@ -3,13 +3,13 @@ import { Test, type TestingModule } from "@nestjs/testing";
 import type { Server } from "http";
 import * as request from "supertest";
 
-import { AuthService } from "../src/auth/auth.service";
+import { AuthService } from "../src/(routes)/auth/auth.service";
 import type {
   LoginRequestBodySchema,
   SignUpRequestBodySchema,
-} from "../src/auth/lib/validation-schemas";
+} from "../src/(routes)/auth/lib/validation-schemas";
+import { UsersService } from "../src/(routes)/users/users.service";
 import { TestModule } from "../src/test.module";
-import { UsersService } from "../src/users/users.service";
 
 describe("AuthController (e2e)", () => {
   let app: INestApplication<Server>;

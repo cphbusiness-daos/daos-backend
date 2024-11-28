@@ -1,4 +1,4 @@
-import type { CookieOptions } from "express";
+import type { CookieOptions, Request } from "express";
 
 export type JwtPayload = {
   sub: string;
@@ -11,4 +11,8 @@ export type JwtToken = {
 
 export type AuthCookie = CookieOptions & {
   token: string;
+};
+
+export type RequestWithUser = Request & {
+  user: JwtPayload;
 };

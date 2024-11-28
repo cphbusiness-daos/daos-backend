@@ -66,4 +66,8 @@ export class AuthService {
       token: await this.jwtService.signAsync(payload),
     };
   }
+
+  async getLoggedInUser(email: string) {
+    return this.usersService.findOne(email);
+  }
 }
