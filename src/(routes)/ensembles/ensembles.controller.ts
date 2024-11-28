@@ -130,20 +130,13 @@ export class EnsemblesController {
   }
 
   @UseGuards(AuthGuard)
-  @Post("/:ensembleId/users/:userId")
+  @Post("/:ensembleId")
   async addUserToEnsemble(
     @Request() req: RequestWithUser,
     @Param("ensembleId") ensembleId: string,
-    @Param("userId") userId: string,
   ) {
-    validate({ schema: mongoIdSchema, value: userId });
+    validate({ schema: mongoIdSchema, value: req.user.sub });
     validate({ schema: mongoIdSchema, value: ensembleId });
-
-    if (req.user.sub !== userId) {
-      throw new UnauthorizedException(
-        "You can only add yourself to an ensemble",
-      );
-    }
 
     const ensemble = await this.ensemblesService.findById(ensembleId);
     if (!ensemble) {
@@ -152,7 +145,7 @@ export class EnsemblesController {
 
     const alreadyInEnsemble = await this.userEnsemblesService.findOne({
       ensembleId,
-      userId,
+      userId: req.user.sub,
     });
 
     if (alreadyInEnsemble) {
@@ -160,7 +153,7 @@ export class EnsemblesController {
     }
 
     await this.userEnsemblesService.createOne({
-      userId,
+      userId: req.user.sub,
       ensembleId,
     });
 
