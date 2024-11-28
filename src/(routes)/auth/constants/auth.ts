@@ -41,9 +41,9 @@ export function sendAuthCookie({
   token: JwtToken;
 }) {
   res.cookie("auth", token, {
-    httpOnly: true,
+    httpOnly: false,
     secure: true,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 1000 * 60 * 60 * 24 * env.AUTH_COOKIE_EXPIRATION, // env.AUTH_COOKIE_EXPIRATION in days
   } satisfies CookieOptions);
 }
