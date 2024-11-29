@@ -1,7 +1,7 @@
 import type { INestApplication } from "@nestjs/common";
 import { Test, type TestingModule } from "@nestjs/testing";
 import type { Server } from "http";
-import * as request from "supertest";
+import request from "supertest";
 
 import { AuthService } from "../src/(routes)/auth/auth.service";
 import type {
