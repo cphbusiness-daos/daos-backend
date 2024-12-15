@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpStatus,
   NotFoundException,
+  Param,
   Put,
   Request,
   Res,
@@ -11,6 +13,7 @@ import {
 } from "@nestjs/common";
 import type { Response } from "express";
 
+import { mongoIdSchema } from "~/schemas/mongo.id";
 import { validate } from "~/util/validation";
 
 import { AuthGuard } from "../auth/auth.guard";
@@ -21,6 +24,22 @@ import { UsersService } from "./users.service";
 @Controller("v1/users")
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  @UseGuards(AuthGuard)
+  @Get("/:id")
+  async getUser(@Param("id") id: string) {
+    const userId = validate({ schema: mongoIdSchema, value: id });
+    const user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, updated_at, ...userData } = user.toObject();
+
+    return userData;
+  }
 
   @UseGuards(AuthGuard)
   @Put("/")
