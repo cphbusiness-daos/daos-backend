@@ -35,14 +35,18 @@ export class EnsemblesController {
   @UseGuards(AuthGuard)
   @Get("/")
   async getEnsembles(
-    @Query("page") page: string,
-    @Query("limit") limit: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+    @Query("name") name?: string,
+    @Query("city") city?: string,
   ) {
     const ensembles = await this.ensemblesService.findAll({
       page: getPage(page),
       limit: getLimit(limit),
+      name,
+      city,
     });
-    const total = await this.ensemblesService.count();
+    const total = await this.ensemblesService.count({ name, city });
 
     if (ensembles.length === 0) {
       throw new NotFoundException("No ensembles found");

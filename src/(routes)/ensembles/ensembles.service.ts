@@ -10,8 +10,16 @@ export class EnsemblesService {
     @InjectModel(Ensemble.name) private ensembleModel: Model<Ensemble>,
   ) {}
 
-  async count(): Promise<number> {
+  async count({
+    name,
+    city,
+  }: {
+    name?: string;
+    city?: string;
+  }): Promise<number> {
     return this.ensembleModel.countDocuments({
+      ...(name && { name: { $regex: new RegExp(name, "i") } }),
+      ...(city && { city: { $regex: new RegExp(city, "i") } }),
       deactivated_at: { $exists: false },
     });
   }
@@ -19,13 +27,19 @@ export class EnsemblesService {
   async findAll({
     page = 1,
     limit = 10,
+    name,
+    city,
   }: {
     page?: number;
     limit?: number;
+    name?: string;
+    city?: string;
   }): Promise<EnsembleDocument[]> {
     const skip = (page - 1) * limit; // Calculate the number of documents to skip
     return this.ensembleModel
       .find({
+        ...(name && { name: { $regex: new RegExp(name, "i") } }),
+        ...(city && { city: { $regex: new RegExp(city, "i") } }),
         deactivated_at: { $exists: false },
       })
       .skip(skip)
