@@ -15,10 +15,11 @@ import type { Response } from "express";
 import { validate } from "../../util/validation";
 import { AuthGuard } from "./auth.guard";
 import { AuthService } from "./auth.service";
-import { hashPassword, sendAuthCookie } from "./constants/auth";
+import { hashPassword, sendAuthCookie, verifyPassword } from "./constants/auth";
 import {
   loginRequestBodySchema,
   signUpRequestBodySchema,
+  updatePasswordSchema,
 } from "./lib/validation-schemas";
 import type { RequestWithUser } from "./types/types";
 
@@ -87,5 +88,54 @@ export class AuthController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- password is removed from the response
     const { password, ...rest } = user.toObject();
     return rest;
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("reset-password")
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Request() req: RequestWithUser, @Body() body: unknown) {
+    const user = await this.authService.getLoggedInUser(req.user.email);
+
+    if (!user) {
+      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    const { password, newPassword } = validate({
+      schema: updatePasswordSchema,
+      value: body,
+    });
+
+    if (!verifyPassword({ password, storedPassword: user.password })) {
+      throw new HttpException("Invalid password", HttpStatus.UNAUTHORIZED);
+    }
+
+    const hashedPassword = hashPassword({ password: newPassword });
+
+    if (
+      verifyPassword({
+        password: newPassword,
+        storedPassword: user.password,
+      }) ===
+      verifyPassword({ password: newPassword, storedPassword: hashedPassword })
+    ) {
+      throw new HttpException(
+        "New password cannot be the same as the old one",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const updatedUser = await this.authService.updatePassword({
+      newPassword: hashedPassword,
+      userId: user._id,
+    });
+
+    if (!updatedUser) {
+      throw new HttpException(
+        "Failed to update password",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return { message: "OK" };
   }
 }

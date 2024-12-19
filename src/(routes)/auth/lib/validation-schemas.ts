@@ -14,3 +14,9 @@ export const signUpRequestBodySchema = z.object({
   newsletterOptInAt: z.boolean().optional(),
 });
 export type SignUpRequestBodySchema = z.infer<typeof signUpRequestBodySchema>;
+
+export const updatePasswordSchema = z.object({
+  password: z.string(),
+  newPassword: z.string(),
+});
+export type UpdatePasswordSchema = z.infer<typeof updatePasswordSchema>;

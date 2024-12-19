@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import type { UserDocument } from "../users/users.schema";
 import { UsersService } from "../users/users.service";
 import { verifyPassword } from "./constants/auth";
 import type { SignUpRequestBodySchema } from "./lib/validation-schemas";
@@ -69,5 +70,21 @@ export class AuthService {
 
   async getLoggedInUser(email: string) {
     return this.usersService.findOne(email);
+  }
+
+  async updatePassword({
+    newPassword,
+    userId,
+  }: {
+    newPassword: string;
+    userId: UserDocument["_id"];
+  }) {
+    const timestamp = new Date().toISOString();
+    const updatedUser = await this.usersService.updateOne(userId.toString(), {
+      password: newPassword,
+      updated_at: timestamp,
+    });
+
+    return updatedUser;
   }
 }
