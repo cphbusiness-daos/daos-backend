@@ -46,6 +46,7 @@ export class EnsemblesService {
       .limit(limit)
       .exec();
   }
+
   async findById(id: string): Promise<EnsembleDocument | null> {
     return this.ensembleModel
       .findOne({
@@ -70,6 +71,18 @@ export class EnsemblesService {
 
   async insertOne(ensemble: Ensemble): Promise<EnsembleDocument> {
     return await this.ensembleModel.create(ensemble);
+  }
+
+  async updateOne({
+    id,
+    ensemble,
+  }: {
+    id: string;
+    ensemble: Partial<EnsembleDocument>;
+  }): Promise<EnsembleDocument | null> {
+    return this.ensembleModel
+      .findByIdAndUpdate(id, ensemble, { new: true })
+      .exec();
   }
 
   async deleteAll(): Promise<void> {

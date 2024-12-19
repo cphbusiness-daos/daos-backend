@@ -6,6 +6,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
   Request,
   UnauthorizedException,
@@ -22,7 +23,10 @@ import { EnsemblesService } from "./ensembles.service";
 import { getId } from "./lib/get-id";
 import { getLimit } from "./lib/get-limit";
 import { getPage } from "./lib/get-page";
-import { createEnsembleBodySchema } from "./lib/validation-schemas";
+import {
+  createEnsembleBodySchema,
+  updateEnsembleBodySchema,
+} from "./lib/validation-schemas";
 
 @Controller("v1/ensembles")
 export class EnsemblesController {
@@ -138,6 +142,30 @@ export class EnsemblesController {
     });
 
     return createdEnsemble;
+  }
+
+  @UseGuards(AuthGuard)
+  @Put("/:id")
+  async updateEnsemble(
+    @Param("id") id: string,
+    @Body() updateEnsembleBody: unknown,
+  ) {
+    const idValue = getId(id);
+    const body = validate({
+      schema: updateEnsembleBodySchema,
+      value: updateEnsembleBody,
+    });
+
+    const ensemble = await this.ensemblesService.updateOne({
+      id: idValue,
+      ensemble: body,
+    });
+
+    if (!ensemble) {
+      throw new NotFoundException("Ensemble not found");
+    }
+
+    return ensemble;
   }
 
   @UseGuards(AuthGuard)

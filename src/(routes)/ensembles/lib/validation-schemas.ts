@@ -30,3 +30,6 @@ export const createEnsembleBodySchema = z.object({
 });
 
 export type CreateEnsembleBody = z.infer<typeof createEnsembleBodySchema>;
+
+export const updateEnsembleBodySchema = createEnsembleBodySchema.partial();
+export type UpdateEnsembleBody = z.infer<typeof updateEnsembleBodySchema>;
