@@ -65,10 +65,20 @@ export class EnsemblesController {
 
   @UseGuards(AuthGuard)
   @Get("/users/:userId")
-  async getEnsemblesForUser(@Param("userId") userId: string) {
+  async getEnsemblesForUser(
+    @Param("userId") userId: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+  ) {
     validate({ schema: mongoIdSchema, value: userId });
 
-    const userEnsembles = await this.userEnsemblesService.findByUserId(userId);
+    const userEnsembles = await this.userEnsemblesService.findByUserId({
+      userId,
+      page: getPage(page),
+      limit: getLimit(limit, 5),
+    });
+
+    const total = await this.userEnsemblesService.countByUserId(userId);
 
     if (!userEnsembles || userEnsembles.length === 0) {
       throw new NotFoundException("No ensembles found");
@@ -89,6 +99,7 @@ export class EnsemblesController {
     return {
       data: ensembles,
       length: ensembles.length,
+      total,
     };
   }
 

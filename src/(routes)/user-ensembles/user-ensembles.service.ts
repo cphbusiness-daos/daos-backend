@@ -26,12 +26,28 @@ export class UserEnsemblesService {
       .exec();
   }
 
-  async findByUserId(userId: string): Promise<UserEnsembleDocument[] | null> {
+  async findByUserId({
+    userId,
+    page = 1,
+    limit = 10,
+  }: {
+    userId: string;
+    page?: number;
+    limit?: number;
+  }): Promise<UserEnsembleDocument[] | null> {
     return this.userEnsembleModel
       .find({
         user_id: userId,
       })
+      .skip((page - 1) * limit)
+      .limit(limit)
       .exec();
+  }
+
+  async countByUserId(userId: string): Promise<number> {
+    return this.userEnsembleModel.countDocuments({
+      user_id: userId,
+    });
   }
 
   async findByEnsembleId(
