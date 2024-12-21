@@ -13,9 +13,8 @@ import {
 } from "@nestjs/common";
 import type { Response } from "express";
 
-import { mongoIdSchema } from "~/schemas/mongo.id";
-import { validate } from "~/util/validation";
-
+import { mongoIdSchema } from "../../schemas/mongo.id";
+import { validate } from "../../util/validation";
 import { AuthGuard } from "../auth/auth.guard";
 import { RequestWithUser } from "../auth/types/types";
 import { updateUserSchema } from "./lib/validation-schemas";

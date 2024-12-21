@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 import type { Ensemble } from "../../src/(routes)/ensembles/ensembles.schema";
 
 export const mockEnsembles = [
@@ -12,7 +14,7 @@ export const mockEnsembles = [
     practice_frequency: "weekly",
     ensemble_type: ["continuous"],
     genre: ["symphonic", "late-romantic"],
-    admin_user_id: "admin123",
+    admin_user_id: new ObjectId().toString(),
     created_at: "2023-05-20T12:00:00Z",
     updated_at: "2024-02-15T15:30:00Z",
   },
@@ -27,7 +29,7 @@ export const mockEnsembles = [
     practice_frequency: "bi-weekly",
     ensemble_type: ["project_based"],
     genre: ["baroque", "chamber"],
-    admin_user_id: "admin456",
+    admin_user_id: new ObjectId().toString(),
     created_at: "2023-06-10T10:30:00Z",
     updated_at: "2024-03-01T18:00:00Z",
   },

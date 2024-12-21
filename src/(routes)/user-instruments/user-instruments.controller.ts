@@ -12,9 +12,8 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-import { mongoIdSchema } from "~/schemas/mongo.id";
-import { validate } from "~/util/validation";
-
+import { mongoIdSchema } from "../../schemas/mongo.id";
+import { validate } from "../../util/validation";
 import { AuthGuard } from "../auth/auth.guard";
 import type { RequestWithUser } from "../auth/types/types";
 import { InstrumentsService } from "../instruments/instruments.service";

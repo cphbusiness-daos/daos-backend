@@ -28,9 +28,8 @@ describe("AuthController (e2e)", () => {
     await app.init();
   });
 
-  afterEach(async () => {
-    await userService.deleteMany();
-  });
+  afterEach(async () => await userService.deleteMany());
+  afterAll(async () => await app.close());
 
   // Arrange
   const body: SignUpRequestBodySchema = {
